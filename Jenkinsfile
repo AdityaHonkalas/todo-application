@@ -7,50 +7,52 @@ pipeline {
         DOCKER_IMAGE = "adityahonkalas/todo-application-image:latest"
     }
 
-    stage("Clone the github repository") {
+    stages {
+        stage("Clone the github repository") {
 
-        steps{
-            git branch: "main", url: "https://github.com/AdityaHonkalas/todo-application.git"
-        }
-    }
-
-    stage("Build the project with maven skipping the test") {
-
-        steps{
-            sh 'mvn clean package --DskipTests'
-        }
-    }
-
-    stage("Build and push the image to the docker repository") {
-
-        steps{
-            withCredentials([usernamePassword(credentialsId: DOCKER_CRED_ID, "usernameVariable": "DOCKER_USER", "passwordVariable": "DOCKER_PASS")]){
-                sh 'docker login -u DOCKER_USER -p DOCKER_PASS'
-                sh 'docker build -t DOCKER_IMAGE .'
-                sh 'docker push DOCKER_IMAGE'
+            steps{
+                git branch: "main", url: "https://github.com/AdityaHonkalas/todo-application.git"
             }
         }
-    }
 
-    stage("Deploy the application using docker compose") {
+        stage("Build the project with maven skipping the test") {
 
-        steps{
-            sh 'docker compose down'
-            sh 'docker compose up -d'
+            steps{
+                sh 'mvn clean package --DskipTests'
+            }
         }
-    }
 
-    stage("Verify the deployment") {
+        stage("Build and push the image to the docker repository") {
 
-        steps{
-            sh 'docker ps'
+            steps{
+                withCredentials([usernamePassword(credentialsId: DOCKER_CRED_ID, "usernameVariable": "DOCKER_USER", "passwordVariable": "DOCKER_PASS")]){
+                    sh 'docker login -u DOCKER_USER -p DOCKER_PASS'
+                    sh 'docker build -t DOCKER_IMAGE .'
+                    sh 'docker push DOCKER_IMAGE'
+                }
+            }
         }
-    }
 
-    stage("Clean up the workspace") {
+        stage("Deploy the application using docker compose") {
 
-        steps{
-            sh 'rm -rf *'
+            steps{
+                sh 'docker compose down'
+                sh 'docker compose up -d'
+            }
+        }
+
+        stage("Verify the deployment") {
+
+            steps{
+                sh 'docker ps'
+            }
+        }
+
+        stage("Clean up the workspace") {
+
+            steps{
+                sh 'rm -rf *'
+            }
         }
     }
 }
