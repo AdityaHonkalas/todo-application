@@ -10,7 +10,7 @@ pipeline {
     stage("Clone the github repository") {
 
         steps{
-            git branch: main, url: https://github.com/AdityaHonkalas/todo-application.git
+            git branch: "main", url: "https://github.com/AdityaHonkalas/todo-application.git"
         }
     }
 
