@@ -3,8 +3,8 @@ pipeline {
     agent any
 
     environment {
-        "DOCKER_CRED_ID" = "docker-credentials-id"
-        "DOCKER_IMAGE" = "adityahonkalas/todo-application-image:latest"
+        DOCKER_CRED_ID = "docker-credentials-id"
+        DOCKER_IMAGE = "adityahonkalas/todo-application-image:latest"
     }
 
     stage("Clone the github repository") {
