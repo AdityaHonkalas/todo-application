@@ -1,12 +1,12 @@
 version: "3.8"
 
 volumes:
-  name: msql-data
-  driver: local
-  driver_opts:
-    type: none
-    o: bind
-    device: /tmp/mysql-data/todo-app
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /tmp/mysql-data/todo-app
 
 networks:
   todo-network:
@@ -15,7 +15,6 @@ networks:
 services:
   mysql-db:
     image: mysql:latest
-    restarts: always
     networks:
       - todo-network
     volumes:
@@ -23,14 +22,11 @@ services:
     ports:
       - 3037:3036
     environment:
-      - MYSQL_DATABASE: "tododb"
-      - MYSQL_ROOT_PASSWORD: "Root@123"
-      
+      MYSQL_ROOT_PASSWORD: "Root@123"
+      MYSQL_DATABASE: "tododb"
+
   todo-application:
     image: adityahonkalas/todo-application-image:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
     networks:
       - todo-network
     depends_on:
@@ -38,8 +34,6 @@ services:
     ports:
       - 8082:8081
     environment:
-      - SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/tododb
-      - SPRING_DATASOURCE_USERNAME: "root"
-      - SPRING_DATASOURCE_PASSWORD: "Root@123"
-    
-  
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-db:3306/tododb"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "Root@123"
