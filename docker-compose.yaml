@@ -2,11 +2,6 @@ version: "3.8"
 
 volumes:
   mysql-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/mysql-data
 
 networks:
   todo-network:
