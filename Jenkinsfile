@@ -3,12 +3,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CRED_ID = "docker-credentials-id"
+        DOCKER_HUB_CRED_ID = "docker-hub-credentials"
         DOCKER_IMAGE = "adityahonkalas/todo-application-image:latest"
     }
 
     stages {
-        stage("Clone the github repository") {
+        stage("Clone the todo-application repository") {
 
             steps{
                 git branch: "main", url: "https://github.com/AdityaHonkalas/todo-application.git"
@@ -22,13 +22,18 @@ pipeline {
             }
         }
 
-        stage("Build and push the image to the docker repository") {
+        stage('Build docker image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage("Push the image to the docker hub") {
 
             steps{
-                withCredentials([usernamePassword(credentialsId: DOCKER_CRED_ID, "usernameVariable": "DOCKER_USER", "passwordVariable": "DOCKER_PASS")]){
-                    sh 'docker login -u DOCKER_USER -p DOCKER_PASS'
-                    sh 'docker build -t DOCKER_IMAGE .'
-                    sh 'docker push DOCKER_IMAGE'
+                withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CRED_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]){
+                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                    sh 'docker push $DOCKER_IMAGE'
                 }
             }
         }
@@ -36,7 +41,7 @@ pipeline {
         stage("Deploy the application using docker compose") {
 
             steps{
-                sh 'docker compose down'
+                sh 'docker compose down || true'
                 sh 'docker compose up -d'
             }
         }
