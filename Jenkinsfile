@@ -11,6 +11,16 @@ pipeline {
         DOCKER_IMAGE = "adityahonkalas/todo-application-image:latest"
     }
 
+    stage("Check the tools version") {
+            steps{
+                sh '''
+                    git --version
+                    docker --version
+                    mvn --version
+                '''
+            }
+    }
+
     stages {
         stage("Clone the todo-application repository") {
 
@@ -22,7 +32,7 @@ pipeline {
         stage("Build the project with maven skipping the test") {
 
             steps{
-                sh 'mvn clean package --DskipTests'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
