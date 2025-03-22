@@ -2,10 +2,6 @@ pipeline {
 
     agent any
 
-    tools {
-        maven '3.9.9'
-    }
-
     environment {
         DOCKER_HUB_CRED_ID = "docker-hub-credentials"
         DOCKER_IMAGE = "adityahonkalas/todo-application-image:latest"
