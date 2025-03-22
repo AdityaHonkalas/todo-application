@@ -11,7 +11,10 @@ pipeline {
         DOCKER_IMAGE = "adityahonkalas/todo-application-image:latest"
     }
 
-    stage("Check the tools version") {
+
+    stages {
+
+        stage("Check the tools version") {
             steps{
                 sh '''
                     git --version
@@ -19,9 +22,8 @@ pipeline {
                     mvn --version
                 '''
             }
-    }
-
-    stages {
+        }
+        
         stage("Clone the todo-application repository") {
 
             steps{
